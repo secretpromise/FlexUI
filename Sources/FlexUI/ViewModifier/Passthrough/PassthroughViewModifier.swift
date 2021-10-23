@@ -1,36 +1,37 @@
-internal func modify<A: AnyObject, B>(_ keyPath: ReferenceWritableKeyPath<A, B>, _ newValue: B) -> (A) -> Void {
-  return {
-    $0[keyPath: keyPath] = newValue
-  }
-}
-
-public struct PassthroughViewModifier<A: AnyObject>: ViewModifier {
+public struct PassthroughViewModifier: ViewModifier {
   public typealias Body = Never
   public let description: String
-  public let transform: (UIView) -> A?
-  public let block: (A) -> Void
-  internal init(
+  public var blocks: [(UIView) -> Void]
+  internal init<A>(
     description: String,
     transform: @escaping (UIView) -> A?,
     block: @escaping (A) -> Void
   ) {
     self.description = description
-    self.transform = transform
-    self.block = block
+    self.blocks = [{
+      _ = transform($0).map(block)
+    }]
   }
   public static func _modifyContent(_ modifier: _GraphValue<Self>, _ inputs: _ViewInputs, body: @escaping (_Graph, _ViewInputs) -> _ViewOutputs) -> _ViewOutputs {
     var contents = body(_Graph(), inputs)
     contents.nodes.indices.forEach { index in
       contents.nodes[index].modify { (v, values) in
-        modifier.value.transform(v).map(modifier.value.block)
+        modifier.value.blocks.forEach {
+          $0(v)
+        }
       }
     }
     return contents
   }
+  public func merge(_ other: PassthroughViewModifier) -> PassthroughViewModifier {
+    var copy = self
+    copy.blocks.append(contentsOf: other.blocks)
+    return copy
+  }
 }
 
-extension PassthroughViewModifier where A: UIView {
-  public init(
+extension PassthroughViewModifier {
+  public init<A>(
     description: String,
     block: @escaping (A) -> Void
   ) {
@@ -40,13 +41,15 @@ extension PassthroughViewModifier where A: UIView {
       block: block
     )
   }
-  public init<B>(
+  public init<A: AnyObject, B>(
     _ keyPath: ReferenceWritableKeyPath<A, B>,
     _ newValue: B
   ) {
-    self.init(
+    self = PassthroughViewModifier(
       description: "PassthroughViewModifier: \(keyPath._kvcKeyPathString ?? "") \(newValue)",
-      block: modify(keyPath, newValue)
+      block: {
+        $0[keyPath: keyPath] = newValue
+      } as (A) -> Void
     )
   }
 }
@@ -61,5 +64,16 @@ public struct PassthroughModifiedContent<Content: View, Modifier: ViewModifier>:
   }
   public static func _makeView(_ view: _GraphValue<Self>, _ inputs: _ViewInputs) -> _ViewOutputs {
     ModifiedContent<Content, Modifier>._makeView(view.branch(.init(content: view.value.content, modifier: view.value.modifier)), inputs)
+  }
+}
+
+protocol _PassthroughViewModifier {
+  var base: PassthroughViewModifier { get }
+  init(base: PassthroughViewModifier)
+}
+
+extension _PassthroughViewModifier {
+  public func merge(_ other: Self) -> Self {
+    Self(base: base.merge(other.base))
   }
 }

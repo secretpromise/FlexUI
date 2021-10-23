@@ -20,10 +20,14 @@ class ViewController: UIViewController {
       VStack {
         Text(verbatim: "hello world")
       }
-      .alignItems(.center)
-      .justifyContent(.center)
-      .height(100%)
-      .backgroundColor(.white)
+      .yoga {
+        .alignItems(.center)
+        .justifyContent(.center)
+        .height(100%)
+      }
+      .cocoa {
+        .backgroundColor(.white)
+      }
     }
     navigationController?.pushViewController(controller, animated: true)
   }

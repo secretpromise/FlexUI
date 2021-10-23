@@ -1,0 +1,32 @@
+PODS:
+  - FlexUI (0.5):
+    - RxSwift
+    - Yoga
+    - YogaKit
+  - RxSwift (6.2.0)
+  - Yoga (1.14.0)
+  - YogaKit (1.18.1):
+    - Yoga (~> 1.14)
+
+DEPENDENCIES:
+  - FlexUI (from `./`)
+
+SPEC REPOS:
+  trunk:
+    - RxSwift
+    - Yoga
+    - YogaKit
+
+EXTERNAL SOURCES:
+  FlexUI:
+    :path: "./"
+
+SPEC CHECKSUMS:
+  FlexUI: e52ec379f56b04afc6084d4c3d779f8ab60c8fe9
+  RxSwift: d356ab7bee873611322f134c5f9ef379fa183d8f
+  Yoga: cff67a400f6b74dc38eb0bad4f156673d9aa980c
+  YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
+
+PODFILE CHECKSUM: 32c5b7dc817b02714b6332296c8a595784896ffa
+
+COCOAPODS: 1.11.2

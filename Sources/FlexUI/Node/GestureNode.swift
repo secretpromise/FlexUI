@@ -1,0 +1,1 @@
+typealias GestureNode = Node<UIGestureRecognizer>

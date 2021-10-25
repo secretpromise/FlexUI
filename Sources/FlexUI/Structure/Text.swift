@@ -1,4 +1,5 @@
 import CoreGraphics
+import Foundation
 
 @usableFromInline
 internal class AnyTextModifier: Equatable {
@@ -41,6 +42,12 @@ public struct Text: Equatable {
   @inlinable
   public init(attributedString: NSAttributedString) {
     self.init(storage: .anyTextStorage(AttributedTextStorage(attributedString: attributedString)))
+  }
+  public init<S>(_ content: S) where S : StringProtocol {
+    self.init(storage: .verbatim(String(content)))
+  }
+  public init(_ key: LocalizedStringKey, tableName: String? = nil, bundle: Bundle? = nil, comment: StaticString? = nil) {
+    self.init(verbatim: NSLocalizedString(key.key, tableName: tableName, bundle: bundle ?? .main, value: key.key.uppercased(), comment: comment?.description ?? ""))
   }
   @usableFromInline
   internal init(storage: Storage) {

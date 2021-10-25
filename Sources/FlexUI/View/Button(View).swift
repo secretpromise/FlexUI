@@ -1,7 +1,7 @@
 import UIKit
 import YogaKit
 
-extension Button: View {
+extension Button {
   public static func _makeView(_ view: _GraphValue<Self>, _ inputs: _ViewInputs) -> _ViewOutputs {
     let value = view.value
     let node = ViewNode(

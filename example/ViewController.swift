@@ -6,8 +6,7 @@
 //
 
 import UIKit
-import FlexUI
-import YogaKit
+import SwiftUI
 
 class ViewController: UIViewController {
   
@@ -16,21 +15,25 @@ class ViewController: UIViewController {
     // Do any additional setup after loading the view.
   }
   @IBAction func pressAction(_ sender: Any) {
-    let controller = HostingViewController {
-      VStack {
-        Text(verbatim: "hello world")
-      }
-      .yoga {
-        .alignItems(.center)
-        .justifyContent(.center)
-        .height(100%)
-      }
-      .cocoa {
-        .backgroundColor(.white)
-      }
-    }
-    navigationController?.pushViewController(controller, animated: true)
+    let a = Text("").buttonStyle(DefaultButtonStyle.automatic)
+    print(type(of: a))
   }
+//  func pushText() {
+//    let controller = HostingViewController {
+//      VStack {
+//        Text(verbatim: "hello world")
+//      }
+//      .yoga {
+//        .alignItems(.center)
+//        .justifyContent(.center)
+//        .height(100%)
+//      }
+//      .cocoa {
+//        .backgroundColor(.white)
+//      }
+//    }
+//    navigationController?.pushViewController(controller, animated: true)
+//  }
   
 }
 
